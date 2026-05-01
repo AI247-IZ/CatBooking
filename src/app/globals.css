@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cat-primary: #fdf2f8; /* Soft pink */
+  --color-cat-secondary: #fbcfe8;
+  --color-cat-accent: #f472b6;
+  --color-cat-text: #4b5563;
+  --color-cat-dark: #1f2937;
+  
+  --font-sans: "Quicksand", "Inter", sans-serif;
+}
+
+body {
+  background-color: var(--color-cat-primary);
+  color: var(--color-cat-text);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-cat-dark);
+  font-weight: 700;
+}
