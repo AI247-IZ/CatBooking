@@ -7,7 +7,7 @@ export default function Home() {
       <section className="relative bg-gradient-to-br from-cat-secondary/40 via-cat-primary to-white py-24 px-4 overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-cat-accent/5 rounded-full -mr-48 -mt-48 blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-cat-secondary/20 rounded-full -ml-48 -mb-48 blur-3xl"></div>
-        
+
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <div className="inline-block px-4 py-1.5 mb-6 text-xs font-black uppercase tracking-widest text-cat-accent bg-white rounded-full shadow-sm border border-cat-secondary">
             🐱 The #1 Cat Boarding in Town
@@ -53,7 +53,7 @@ export default function Home() {
           <h2 className="text-4xl font-black text-cat-dark mb-4">Flexible Boarding Options</h2>
           <p className="text-gray-500">Choose the perfect suite for your cat's comfort.</p>
         </div>
-        
+
         <div className="grid md:grid-cols-3 gap-8 items-end">
           {/* Package A */}
           <div className="bg-white rounded-[2.5rem] shadow-xl p-10 text-center border border-cat-primary hover:border-cat-secondary transition group">
