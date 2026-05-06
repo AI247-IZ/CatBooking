@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { DayPicker, DateRange } from "react-day-picker";
 import { format, differenceInDays } from "date-fns";
 import "react-day-picker/style.css";
+import { db } from "@/lib/firebase";
+import { collection, setDoc, doc, serverTimestamp } from "firebase/firestore";
 
 export default function BookingPage() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function BookingPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [range, setRange] = useState<DateRange | undefined>();
+  const [paymentType, setPaymentType] = useState<"full" | "deposit">("full");
 
   const suitePrice = watch("suitePrice", "20");
   const numCats = watch("numberOfCats", 1);
@@ -33,6 +36,7 @@ export default function BookingPage() {
   const extraCatFee = basePrice === 15 ? 0 : 10;
   const pricePerDay = basePrice + (extraCats * extraCatFee);
   const totalPrice = days * pricePerDay;
+  const amountToPay = paymentType === "deposit" ? 50 : totalPrice;
 
   const onSubmit = async (data: any) => {
     if (!range?.from || !range?.to) {
@@ -42,24 +46,42 @@ export default function BookingPage() {
 
     setIsSubmitting(true);
     
-    // Prepare the final data with dates
-    const finalData = {
-      ...data,
-      checkInDate: format(range.from, "yyyy-MM-dd"),
-      checkOutDate: format(range.to, "yyyy-MM-dd"),
-      totalPrice,
-      days
-    };
-
-    console.log("Submitting booking:", finalData);
+    // Generate a simple ID: CB-XXXX (e.g., CB-A7B2)
+    const simpleId = `CB-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
     
-    // Simulating API call
-    setTimeout(() => {
-      // Generate a random booking ID
-      const randomId = "CAT-" + Math.random().toString(36).substring(2, 9).toUpperCase();
-      // Pass totalPrice and days to payment page
-      router.push(`/payment/${randomId}?total=${totalPrice}&days=${days}`);
-    }, 1000);
+    try {
+      // Prepare the final data with dates
+      const finalData = {
+        ...data,
+        checkInDate: format(range.from, "yyyy-MM-dd"),
+        checkOutDate: format(range.to, "yyyy-MM-dd"),
+        totalPrice,
+        amountToPay,
+        paymentType,
+        days,
+        bookingId: simpleId,
+        status: "pending",
+        createdAt: new Date() // Fallback to JS date if no serverTimestamp
+      };
+
+      if (db) {
+        // Save to Firestore with the simple ID as document name
+        await setDoc(doc(db, "bookings", simpleId), {
+          ...finalData,
+          createdAt: serverTimestamp()
+        });
+        console.log("Booking saved with ID: ", simpleId);
+        router.push(`/payment/${simpleId}?total=${totalPrice}&amount=${amountToPay}&days=${days}&paymentType=${paymentType}`);
+      } else {
+        // Fallback: Just redirect with the generated simple ID
+        console.warn("Firebase not configured. Using mock redirection.");
+        router.push(`/payment/${simpleId}?total=${totalPrice}&amount=${amountToPay}&days=${days}&paymentType=${paymentType}`);
+      }
+    } catch (error) {
+      console.error("Error adding booking: ", error);
+      alert("Something went wrong. Please try again.");
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -89,9 +111,7 @@ export default function BookingPage() {
               mode="range"
               selected={range}
               onSelect={setRange}
-              modifiers={{
-                disabled: { before: new Date() }
-              }}
+              disabled={{ before: new Date() }}
               footer={
                 <div className="mt-6 p-4 bg-cat-dark text-white rounded-2xl text-sm shadow-inner w-full">
                   {range?.from ? (
@@ -121,11 +141,11 @@ export default function BookingPage() {
                 </div>
               }
               classNames={{
-                selected: "bg-cat-accent text-white rounded-full",
-                today: "font-bold text-cat-accent underline",
-                range_middle: "bg-cat-primary text-cat-dark rounded-none",
-                range_start: "bg-cat-accent text-white rounded-l-full",
-                range_end: "bg-cat-accent text-white rounded-r-full",
+                day_selected: "bg-cat-accent text-white rounded-full",
+                day_today: "font-bold text-cat-accent underline",
+                day_range_middle: "bg-cat-primary text-cat-dark rounded-none",
+                day_range_start: "bg-cat-accent text-white rounded-l-full",
+                day_range_end: "bg-cat-accent text-white rounded-r-full",
                 chevron: "fill-cat-accent",
               }}
             />
@@ -203,22 +223,63 @@ export default function BookingPage() {
             <textarea {...register("notes")} className="w-full p-4 rounded-2xl border-2 border-cat-primary focus:border-cat-accent outline-none min-h-[120px] transition-colors resize-none" placeholder="Allergies, medication, habits..."></textarea>
           </div>
 
+          <div className="space-y-4">
+            <label className="block text-sm font-bold text-cat-dark ml-1">Payment Option</label>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={() => setPaymentType("full")}
+                className={`p-4 rounded-2xl border-2 transition-all text-sm font-bold ${
+                  paymentType === "full" 
+                    ? "border-cat-accent bg-cat-accent/5 text-cat-accent shadow-md" 
+                    : "border-cat-primary bg-white text-gray-400 hover:border-cat-accent/30"
+                }`}
+              >
+                Full Payment
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentType("deposit")}
+                className={`p-4 rounded-2xl border-2 transition-all text-sm font-bold ${
+                  paymentType === "deposit" 
+                    ? "border-cat-accent bg-cat-accent/5 text-cat-accent shadow-md" 
+                    : "border-cat-primary bg-white text-gray-400 hover:border-cat-accent/30"
+                }`}
+              >
+                Deposit (RM50)
+              </button>
+            </div>
+          </div>
+
           <div className="bg-cat-dark p-8 rounded-[2rem] flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-cat-accent/10 rounded-full -ml-12 -mb-12 transition-transform group-hover:scale-150 duration-700 delay-100"></div>
             
             <div className="relative z-10 text-center md:text-left">
-              <div className="text-xs font-black text-white/50 uppercase tracking-widest mb-1">Total Summary</div>
+              <div className="text-xs font-black text-white/50 uppercase tracking-widest mb-1">
+                {paymentType === "deposit" ? "Deposit to Pay" : "Total to Pay"}
+              </div>
               <div className="text-white font-medium text-lg">
-                {days} days <span className="text-white/30 mx-1">×</span> RM{pricePerDay}
+                {paymentType === "deposit" ? (
+                  <>Fixed Deposit <span className="text-white/30 mx-1">/</span> RM{totalPrice} Total</>
+                ) : (
+                  <>{days} days <span className="text-white/30 mx-1">×</span> RM{pricePerDay}</>
+                )}
               </div>
             </div>
             
             <div className="relative z-10 flex flex-col items-center md:items-end">
               <div className="text-5xl font-black text-cat-accent">
-                RM{totalPrice}
+                RM{amountToPay}
               </div>
-              <div className="text-[10px] text-white/40 font-bold uppercase mt-1 tracking-tighter">Include all taxes & fees</div>
+              <div className="text-[10px] text-white/40 font-bold uppercase mt-1 tracking-tighter">
+                {paymentType === "deposit" ? "Due today" : "Include all taxes & fees"}
+              </div>
+              {paymentType === "deposit" && (
+                <div className="mt-2 py-1 px-3 bg-white/10 rounded-full border border-white/10">
+                  <span className="text-[9px] font-black text-cat-accent uppercase">Balance: RM{totalPrice - 50}</span>
+                </div>
+              )}
             </div>
           </div>
 

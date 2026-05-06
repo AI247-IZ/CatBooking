@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-export default function PaymentPage() {
+function PaymentContent() {
   const { bookingId } = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -11,8 +11,9 @@ export default function PaymentPage() {
 
   // Get total and days from query params
   const totalAmount = parseFloat(searchParams.get("total") || "0"); 
+  const amountToPay = parseFloat(searchParams.get("amount") || searchParams.get("total") || "0");
+  const paymentType = searchParams.get("paymentType") || "full";
   const days = searchParams.get("days") || "0";
-  const depositAmount = totalAmount * 0.3;
 
   const handleFinalize = async () => {
     setIsSubmitting(true);
@@ -25,6 +26,7 @@ export default function PaymentPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-4">
+      {/* ... existing UI ... */}
       <div className="text-center mb-12">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-cat-primary text-cat-accent rounded-full mb-4 shadow-inner">
           <span className="text-2xl">💳</span>
@@ -52,14 +54,24 @@ export default function PaymentPage() {
                 <span className="font-bold text-cat-dark">RM{totalAmount.toFixed(2)}</span>
               </div>
               
+              <div className="flex justify-between items-center py-3 border-b border-cat-primary border-dashed">
+                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Payment Plan</span>
+                <span className="font-bold text-cat-dark capitalize">{paymentType}</span>
+              </div>
+              
               <div className="pt-4">
                 <div className="bg-cat-primary p-4 rounded-2xl flex justify-between items-center border border-cat-secondary shadow-sm">
                   <div>
-                    <div className="text-[10px] font-black text-cat-accent uppercase tracking-tighter">Amount Due</div>
-                    <div className="text-2xl font-black text-cat-dark">RM{totalAmount.toFixed(2)}</div>
+                    <div className="text-[10px] font-black text-cat-accent uppercase tracking-tighter">Amount Due Now</div>
+                    <div className="text-2xl font-black text-cat-dark">RM{amountToPay.toFixed(2)}</div>
                   </div>
                   <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-lg">💰</div>
                 </div>
+                {paymentType === "deposit" && (
+                  <p className="text-[10px] text-gray-400 font-bold mt-2 text-center uppercase tracking-tighter">
+                    Balance RM{(totalAmount - amountToPay).toFixed(2)} to be paid at check-in
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -118,6 +130,14 @@ export default function PaymentPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-20 text-gray-500">Loading payment details...</div>}>
+      <PaymentContent />
+    </Suspense>
   );
 }
 

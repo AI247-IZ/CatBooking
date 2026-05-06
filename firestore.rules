@@ -1,0 +1,24 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Bookings collection rules
+    match /bookings/{bookingId} {
+      // Anyone can create a booking
+      allow create: if true;
+      
+      // Allow user to read their own booking if you implement Auth later
+      // For now, allow read if they have the bookingId (public for mockup simplicity)
+      allow read: if true;
+      
+      // Only admin should be able to update/delete (update later with Auth)
+      allow update, delete: if false; 
+    }
+    
+    // Default rule: Lock everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
