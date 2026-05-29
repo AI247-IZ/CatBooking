@@ -56,6 +56,9 @@ export default function BookingPage() {
     setIsSubmitting(true);
     const simpleId = `CB-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
     
+    console.log("DB instance:", db);
+    console.log("Attempting to save booking...");
+    
     try {
       const finalData = {
         ...data,
@@ -73,19 +76,22 @@ export default function BookingPage() {
       };
 
       if (db) {
+        console.log("Saving to Firestore...");
         await setDoc(doc(db, "bookings", simpleId), {
           ...finalData,
           createdAt: serverTimestamp()
         });
-        console.log("Booking saved with ID: ", simpleId);
+        console.log("✅ Booking saved successfully with ID: ", simpleId);
+        alert("Tempahan berjaya disimpan! Sila teruskan untuk menghantar ke WhatsApp.");
         router.push(`/payment/${simpleId}?total=${totalPrice}&amount=${amountToPay}&days=${days}&paymentType=${paymentType}&rooms=${numRooms}&name=${encodeURIComponent(data.name)}&checkIn=${format(range.from, "dd/MM/yyyy")}&checkOut=${format(range.to, "dd/MM/yyyy")}&pkg=${suitePrice}`);
       } else {
-        console.warn("Firebase not configured. Using mock redirection.");
-        router.push(`/payment/${simpleId}?total=${totalPrice}&amount=${amountToPay}&days=${days}&paymentType=${paymentType}&rooms=${numRooms}&name=${encodeURIComponent(data.name)}&checkIn=${format(range.from, "dd/MM/yyyy")}&checkOut=${format(range.to, "dd/MM/yyyy")}&pkg=${suitePrice}`);
+        console.warn("❌ Firebase DB is null!");
+        alert("Firebase tidak dikonfigurasi. Sila pastikan fail .env.local wujud dan mempunyai butiran yang betul.");
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      console.error("Error adding booking: ", error);
-      alert("Something went wrong. Please try again.");
+    } catch (error: any) {
+      console.error("❌ Error adding booking: ", error);
+      alert(`Ralat semasa menyimpan tempahan: ${error.message}`);
       setIsSubmitting(false);
     }
   };
