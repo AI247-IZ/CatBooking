@@ -12,7 +12,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 
-const ADMIN_PASSWORD = "purrfect2024";
+const ADMIN_PASSWORD = "As821966";
 
 const PACKAGE_LABELS: Record<string, string> = {
   "15": "Package A — RM15/hari",
