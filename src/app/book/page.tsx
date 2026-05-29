@@ -36,7 +36,13 @@ export default function BookingPage() {
     "30": 2
   });
   const [isAdminUnlocked, setIsAdminUnlocked] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminPassword, setAdminPassword] = useState("");
+  const [adminAuthError, setAdminAuthError] = useState(false);
   const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
+  
+  // Admin password (sama dengan halaman admin)
+  const ADMIN_PASSWORD = "As821966";
 
   const suitePrice = watch("suitePrice", "20");
   const numCats = parseInt(watch("numberOfCats") as any || "1");
@@ -89,6 +95,16 @@ export default function BookingPage() {
 
     fetchSettingsAndBookings();
   }, []);
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminPassword === ADMIN_PASSWORD) {
+      setIsAdminAuthenticated(true);
+      setAdminAuthError(false);
+    } else {
+      setAdminAuthError(true);
+    }
+  };
 
   // Helper to count available slots for a specific date and package type (suitePrice)
   const getAvailableSlotsForDate = (date: Date, price: string) => {
@@ -473,137 +489,172 @@ export default function BookingPage() {
       </div>
 
       {/* Admin Slot Management Section */}
-      <div className="bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-cat-primary pb-4 md:pb-6 mb-4 md:mb-6 gap-3">
-          <div>
-            <h2 className="text-xl md:text-2xl font-black text-cat-dark flex items-center gap-2">
-              ⚙️ Pengurusan Slot Hotel
-            </h2>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">Konfigurasi bilangan bilik tersedia & semak jadual tempahan.</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsAdminUnlocked(!isAdminUnlocked)}
-            className="px-4 py-2 md:px-5 md:py-2.5 rounded-lg md:rounded-xl bg-cat-primary hover:bg-cat-primary/85 text-cat-dark font-black text-xs uppercase tracking-wider transition-all w-full md:w-auto text-center"
-          >
-            {isAdminUnlocked ? "Tutup Tetapan" : "Buka Tetapan"}
-          </button>
-        </div>
-
-        {isAdminUnlocked && (
-          <div className="space-y-6 md:space-y-8 animate-fade-in">
-            {/* Setting Form */}
-            <div className="bg-cat-primary/30 p-4 md:p-6 rounded-xl md:rounded-2xl border border-cat-primary space-y-4 md:space-y-6">
-              <div>
-                <h3 className="text-base md:text-lg font-bold text-cat-dark">Had Slot Mengikut Pakej (Slots Limit per Package)</h3>
-                <p className="text-[10px] md:text-xs text-gray-500 mt-1">Konfigurasi bilangan bilik tersedia untuk setiap pakej penginapan.</p>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                {[
-                  { price: "15", label: "RM15 (Package A)" },
-                  { price: "20", label: "RM20 (Package B)" },
-                  { price: "25", label: "RM25 (Package C)" },
-                  { price: "30", label: "RM30 (Package D)" }
-                ].map((item) => (
-                  <div key={item.price} className="space-y-2">
-                    <label className="block text-[10px] md:text-xs font-bold text-cat-dark">{item.label}</label>
-                    <input
-                      type="number"
-                      min="1"
-                      value={suiteLimits[item.price] || 0}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value) || 1;
-                        setSuiteLimits(prev => ({
-                          ...prev,
-                          [item.price]: val
-                        }));
-                      }}
-                      className="w-full p-3 md:p-4 rounded-lg md:rounded-xl border border-cat-secondary bg-white font-bold text-sm focus:border-cat-accent outline-none"
-                    />
-                  </div>
-                ))}
-              </div>
+        <div className="bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-cat-primary pb-4 md:pb-6 mb-4 md:mb-6 gap-3">
+            <div>
+              <h2 className="text-xl md:text-2xl font-black text-cat-dark flex items-center gap-2">
+                ⚙️ Pengurusan Slot Hotel
+              </h2>
+              <p className="text-xs md:text-sm text-gray-500 mt-1">Konfigurasi bilangan bilik tersedia & semak jadual tempahan.</p>
+            </div>
+            {isAdminAuthenticated && (
               <button
                 type="button"
-                disabled={isUpdatingSettings}
-                onClick={async () => {
-                  setIsUpdatingSettings(true);
-                  if (typeof window !== "undefined") {
-                    localStorage.setItem("cat_hotel_suite_limits", JSON.stringify(suiteLimits));
-                  }
-                  if (db) {
-                    try {
-                      await setDoc(doc(db, "settings", "hotel"), { suiteLimits }, { merge: true });
-                      alert("Had slot berjaya dikemaskini!");
-                    } catch (e) {
-                      console.error("Firestore write failed, falling back to local storage:", e);
-                      alert("Had slot berjaya disimpan secara lokal (Firebase tiada kebenaran write).");
-                    }
-                  } else {
-                    alert("Had slot dikemaskini dalam browser sahaja.");
-                  }
-                  setIsUpdatingSettings(false);
-                }}
-                className="w-full md:w-auto px-6 py-3 md:px-8 md:py-4 bg-cat-accent hover:bg-cat-accent/90 text-white rounded-lg md:rounded-xl font-black text-xs md:text-sm transition-all disabled:opacity-50"
+                onClick={() => setIsAdminUnlocked(!isAdminUnlocked)}
+                className="px-4 py-2 md:px-5 md:py-2.5 rounded-lg md:rounded-xl bg-cat-primary hover:bg-cat-primary/85 text-cat-dark font-black text-xs uppercase tracking-wider transition-all w-full md:w-auto text-center"
               >
-                {isUpdatingSettings ? "Mengemaskini..." : "Simpan Tetapan Slot"}
+                {isAdminUnlocked ? "Tutup Tetapan" : "Buka Tetapan"}
               </button>
-            </div>
-
-            {/* Booked dates summary */}
-            <div>
-              <h3 className="text-base md:text-lg font-bold text-cat-dark mb-2">
-                Jadual Penggunaan Slot - Pakej RM{suitePrice} (30 Hari Akan Datang)
-              </h3>
-              <p className="text-[10px] md:text-xs text-gray-500 mb-3 md:mb-4">
-                Menunjukkan bilangan bilik yang ditempah bagi pakej RM{suitePrice} berbanding had limit ({suiteLimits[suitePrice] || 9} bilik).
-              </p>
-              <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-4">
-                {Array.from({ length: 30 }).map((_, index) => {
-                  const date = new Date();
-                  date.setDate(date.getDate() + index);
-                  const dateStr = format(date, "yyyy-MM-dd");
-                  
-                  // Count total booked slots for this date and package
-                  let booked = 0;
-                  bookings.forEach((booking) => {
-                    if (booking.suitePrice === suitePrice && dateStr >= booking.checkInDate && dateStr <= booking.checkOutDate) {
-                      booked += (booking.numberOfRooms || 1);
-                    }
-                  });
-                  
-                  const limit = suiteLimits[suitePrice] || 9;
-                  const available = Math.max(0, limit - booked);
-                  const isFull = available <= 0;
-                  
-                  return (
-                    <div 
-                      key={index} 
-                      className={`p-2 md:p-4 rounded-xl md:rounded-2xl border text-center transition-all ${
-                        isFull 
-                          ? "bg-red-50 border-red-200 text-red-700 animate-pulse-soft" 
-                          : booked > 0 
-                            ? "bg-amber-50 border-amber-200 text-amber-700" 
-                            : "bg-gray-50 border-gray-100 text-gray-400"
-                      }`}
-                    >
-                      <div className="text-[8px] md:text-[10px] font-black uppercase tracking-wider">
-                        {format(date, "EEE, MMM d")}
-                      </div>
-                      <div className="text-lg md:text-xl font-black mt-1 md:mt-2">
-                        {booked} / {limit}
-                      </div>
-                      <div className="text-[8px] md:text-[9px] font-bold uppercase mt-0.5 md:mt-1">
-                        {isFull ? "Penuh ❌" : `${available} Slot Kosong`}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            )}
           </div>
-        )}
-      </div>
+
+          {!isAdminAuthenticated ? (
+            /* Admin Login Form */
+            <div className="max-w-sm mx-auto">
+              <form onSubmit={handleAdminLogin} className="bg-cat-primary/30 p-6 rounded-2xl border border-cat-secondary space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-black text-cat-dark block">Masukkan Kata Laluan Admin</label>
+                  <input
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => { setAdminPassword(e.target.value); setAdminAuthError(false); }}
+                    placeholder="••••••••"
+                    className={`w-full p-3 md:p-4 rounded-xl border-2 outline-none font-bold transition-colors text-sm md:text-base ${
+                      adminAuthError
+                        ? "border-red-300 bg-red-50 text-red-700"
+                        : "border-cat-primary focus:border-cat-accent bg-white"
+                    }`}
+                  />
+                  {adminAuthError && (
+                    <p className="text-xs text-red-500 font-bold ml-1">
+                      ❌ Kata laluan salah. Cuba lagi.
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-cat-accent text-white py-3 md:py-4 rounded-xl font-black text-sm md:text-base hover:bg-cat-accent/90 transition-all shadow-lg shadow-cat-accent/20"
+                >
+                  Log Masuk Admin
+                </button>
+              </form>
+            </div>
+          ) : (
+            isAdminUnlocked && (
+              <div className="space-y-6 md:space-y-8 animate-fade-in">
+                {/* Setting Form */}
+                <div className="bg-cat-primary/30 p-4 md:p-6 rounded-xl md:rounded-2xl border border-cat-primary space-y-4 md:space-y-6">
+                  <div>
+                    <h3 className="text-base md:text-lg font-bold text-cat-dark">Had Slot Mengikut Pakej (Slots Limit per Package)</h3>
+                    <p className="text-[10px] md:text-xs text-gray-500 mt-1">Konfigurasi bilangan bilik tersedia untuk setiap pakej penginapan.</p>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                    {[
+                      { price: "15", label: "RM15 (Package A)" },
+                      { price: "20", label: "RM20 (Package B)" },
+                      { price: "25", label: "RM25 (Package C)" },
+                      { price: "30", label: "RM30 (Package D)" }
+                    ].map((item) => (
+                      <div key={item.price} className="space-y-2">
+                        <label className="block text-[10px] md:text-xs font-bold text-cat-dark">{item.label}</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={suiteLimits[item.price] || 0}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 1;
+                            setSuiteLimits(prev => ({
+                              ...prev,
+                              [item.price]: val
+                            }));
+                          }}
+                          className="w-full p-3 md:p-4 rounded-lg md:rounded-xl border border-cat-secondary bg-white font-bold text-sm focus:border-cat-accent outline-none"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isUpdatingSettings}
+                    onClick={async () => {
+                      setIsUpdatingSettings(true);
+                      if (typeof window !== "undefined") {
+                        localStorage.setItem("cat_hotel_suite_limits", JSON.stringify(suiteLimits));
+                      }
+                      if (db) {
+                        try {
+                          await setDoc(doc(db, "settings", "hotel"), { suiteLimits }, { merge: true });
+                          alert("Had slot berjaya dikemaskini!");
+                        } catch (e) {
+                          console.error("Firestore write failed, falling back to local storage:", e);
+                          alert("Had slot berjaya disimpan secara lokal (Firebase tiada kebenaran write).");
+                        }
+                      } else {
+                        alert("Had slot dikemaskini dalam browser sahaja.");
+                      }
+                      setIsUpdatingSettings(false);
+                    }}
+                    className="w-full md:w-auto px-6 py-3 md:px-8 md:py-4 bg-cat-accent hover:bg-cat-accent/90 text-white rounded-lg md:rounded-xl font-black text-xs md:text-sm transition-all disabled:opacity-50"
+                  >
+                    {isUpdatingSettings ? "Mengemaskini..." : "Simpan Tetapan Slot"}
+                  </button>
+                </div>
+
+                {/* Booked dates summary */}
+                <div>
+                  <h3 className="text-base md:text-lg font-bold text-cat-dark mb-2">
+                    Jadual Penggunaan Slot - Pakej RM{suitePrice} (30 Hari Akan Datang)
+                  </h3>
+                  <p className="text-[10px] md:text-xs text-gray-500 mb-3 md:mb-4">
+                    Menunjukkan bilangan bilik yang ditempah bagi pakej RM{suitePrice} berbanding had limit ({suiteLimits[suitePrice] || 9} bilik).
+                  </p>
+                  <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-4">
+                    {Array.from({ length: 30 }).map((_, index) => {
+                      const date = new Date();
+                      date.setDate(date.getDate() + index);
+                      const dateStr = format(date, "yyyy-MM-dd");
+                      
+                      // Count total booked slots for this date and package
+                      let booked = 0;
+                      bookings.forEach((booking) => {
+                        if (booking.suitePrice === suitePrice && dateStr >= booking.checkInDate && dateStr <= booking.checkOutDate) {
+                          booked += (booking.numberOfRooms || 1);
+                        }
+                      });
+                      
+                      const limit = suiteLimits[suitePrice] || 9;
+                      const available = Math.max(0, limit - booked);
+                      const isFull = available <= 0;
+                      
+                      return (
+                        <div 
+                          key={index} 
+                          className={`p-2 md:p-4 rounded-xl md:rounded-2xl border text-center transition-all ${
+                            isFull 
+                              ? "bg-red-50 border-red-200 text-red-700 animate-pulse-soft" 
+                              : booked > 0 
+                                ? "bg-amber-50 border-amber-200 text-amber-700" 
+                                : "bg-gray-50 border-gray-100 text-gray-400"
+                          }`}
+                        >
+                          <div className="text-[8px] md:text-[10px] font-black uppercase tracking-wider">
+                            {format(date, "EEE, MMM d")}
+                          </div>
+                          <div className="text-lg md:text-xl font-black mt-1 md:mt-2">
+                            {booked} / {limit}
+                          </div>
+                          <div className="text-[8px] md:text-[9px] font-bold uppercase mt-0.5 md:mt-1">
+                            {isFull ? "Penuh ❌" : `${available} Slot Kosong`}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )
+          )}
+        </div>
     </div>
   );
 }
