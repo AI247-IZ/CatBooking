@@ -7,7 +7,7 @@ import { DayPicker, DateRange } from "react-day-picker";
 import { format, differenceInDays } from "date-fns";
 import "react-day-picker/style.css";
 import { db } from "@/lib/firebase";
-import { collection, setDoc, doc, getDoc, getDocs, serverTimestamp } from "firebase/firestore";
+import { collection, setDoc, doc, serverTimestamp } from "firebase/firestore";
 
 export default function BookingPage() {
   const router = useRouter();
@@ -26,92 +26,10 @@ export default function BookingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [range, setRange] = useState<DateRange | undefined>();
   const [paymentType, setPaymentType] = useState<"full" | "deposit">("full");
-  
-  // Slots Configuration & Data
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [suiteLimits, setSuiteLimits] = useState<Record<string, number>>({
-    "15": 6,
-    "20": 9,
-    "25": 9,
-    "30": 2
-  });
 
   const suitePrice = watch("suitePrice", "20");
   const numCats = parseInt(watch("numberOfCats") as any || "1");
   const numRooms = parseInt(watch("numberOfRooms") as any || "1");
-
-  // Fetch bookings and settings from Firestore
-  useEffect(() => {
-    // Read from localStorage first for immediate local UI update
-    if (typeof window !== "undefined") {
-      const localLimits = localStorage.getItem("cat_hotel_suite_limits");
-      if (localLimits) {
-        try {
-          setSuiteLimits(JSON.parse(localLimits));
-        } catch (e) {
-          console.error("Failed to parse localLimits:", e);
-        }
-      }
-    }
-
-    const fetchSettingsAndBookings = async () => {
-      if (!db) return;
-      try {
-        // 1. Fetch suite limits config
-        const settingsSnap = await getDoc(doc(db, "settings", "hotel"));
-        if (settingsSnap.exists() && settingsSnap.data().suiteLimits) {
-          const limits = settingsSnap.data().suiteLimits;
-          setSuiteLimits(limits);
-          if (typeof window !== "undefined") {
-            localStorage.setItem("cat_hotel_suite_limits", JSON.stringify(limits));
-          }
-        }
-
-        // 2. Fetch bookings
-        const bookingsSnap = await getDocs(collection(db, "bookings"));
-        const list: any[] = [];
-        bookingsSnap.forEach((doc) => {
-          const data = doc.data();
-          if (data.checkInDate && data.status !== "cancelled") {
-            list.push({
-              id: doc.id,
-              ...data
-            });
-          }
-        });
-        setBookings(list);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchSettingsAndBookings();
-  }, []);
-
-  // Helper to count available slots for a specific date and package type (suitePrice)
-  const getAvailableSlotsForDate = (date: Date, price: string) => {
-    const dateStr = format(date, "yyyy-MM-dd");
-    let bookedCount = 0;
-    bookings.forEach((booking) => {
-      // Check if booking has the same suitePrice (package type) and overlaps
-      if (booking.suitePrice === price && dateStr >= booking.checkInDate && dateStr <= booking.checkOutDate) {
-        bookedCount += (booking.numberOfRooms || 1);
-      }
-    });
-    const limit = suiteLimits[price] || 9;
-    return Math.max(0, limit - bookedCount);
-  };
-
-  // Helper to get all dates in a range
-  const getDatesInRange = (startDate: Date, endDate: Date) => {
-    const dates = [];
-    let currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      dates.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return dates;
-  };
 
   // Calculate days and price
   let days = 0;
@@ -129,41 +47,9 @@ export default function BookingPage() {
   const depositAmount = totalPrice < 60 ? 20 : 50;
   const amountToPay = paymentType === "deposit" ? depositAmount : totalPrice;
 
-  // Check if range has enough slots for selected rooms
-  let isRangeAvailable = true;
-  let firstLimitingDate = "";
-  let maxBookedRoomsOnLimitDate = 0;
-
-  if (range?.from && range?.to) {
-    const dates = getDatesInRange(range.from, range.to);
-    for (const date of dates) {
-      const dateStr = format(date, "yyyy-MM-dd");
-      let bookedCount = 0;
-      bookings.forEach((booking) => {
-        // Compare package-specific limits
-        if (booking.suitePrice === suitePrice && dateStr >= booking.checkInDate && dateStr <= booking.checkOutDate) {
-          bookedCount += (booking.numberOfRooms || 1);
-        }
-      });
-      const limit = suiteLimits[suitePrice] || 9;
-      const available = limit - bookedCount;
-      if (available < numRooms) {
-        isRangeAvailable = false;
-        firstLimitingDate = format(date, "dd/MM/yyyy");
-        maxBookedRoomsOnLimitDate = bookedCount;
-        break;
-      }
-    }
-  }
-
   const onSubmit = async (data: any) => {
     if (!range?.from || !range?.to) {
       alert("Sila pilih tarikh masuk dan keluar.");
-      return;
-    }
-
-    if (!isRangeAvailable) {
-      alert("Slot tidak mencukupi untuk tarikh yang dipilih.");
       return;
     }
 
@@ -235,8 +121,7 @@ export default function BookingPage() {
               disabled={(date) => {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
-                if (date < today) return true;
-                return getAvailableSlotsForDate(date, suitePrice) <= 0;
+                return date < today;
               }}
               footer={
                 <div className="mt-4 md:mt-6 p-3 md:p-4 bg-cat-dark text-white rounded-xl md:rounded-2xl text-xs md:text-sm shadow-inner w-full">
@@ -401,19 +286,7 @@ export default function BookingPage() {
             </div>
           </div>
 
-          {/* Slot availability warning banner */}
-          {!isRangeAvailable && (
-            <div className="p-3 md:p-4 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold flex items-start gap-3 animate-pulse">
-              <span className="text-lg md:text-xl">⚠️</span>
-              <div>
-                <p className="font-bold uppercase tracking-wider text-[10px] md:text-xs text-red-800">Slot Tidak Mencukupi</p>
-                <p className="mt-1">
-                  Pada tarikh <span className="underline font-black">{firstLimitingDate}</span>, hanya tinggal <span className="underline font-black">{(suiteLimits[suitePrice] || 9) - maxBookedRoomsOnLimitDate} bilik</span> sahaja yang kosong.
-                </p>
-                <p className="text-[10px] md:text-xs text-red-600/80 font-normal mt-0.5">Sila kurangkan bilangan bilik atau pilih tarikh lain.</p>
-              </div>
-            </div>
-          )}
+
 
           <div className="bg-cat-dark p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] flex flex-col md:flex-row justify-between items-center gap-5 md:gap-6 shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-24 md:w-32 h-24 md:h-32 bg-white/5 rounded-full -mr-12 md:-mr-16 -mt-12 md:-mt-16 transition-transform group-hover:scale-150 duration-700"></div>
@@ -451,7 +324,7 @@ export default function BookingPage() {
           </div>
 
           <button 
-            disabled={isSubmitting || days <= 0 || !isRangeAvailable} 
+            disabled={isSubmitting || days <= 0} 
             type="submit" 
             className="w-full bg-cat-accent text-white p-4 md:p-5 rounded-xl md:rounded-2xl font-black text-lg md:text-xl hover:bg-cat-accent/90 hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl shadow-cat-accent/20 disabled:opacity-50 disabled:grayscale disabled:scale-100 disabled:cursor-not-allowed group"
           >

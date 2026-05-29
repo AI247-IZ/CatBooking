@@ -10,11 +10,7 @@ import {
   doc,
   query,
   orderBy,
-  getDoc,
-  serverTimestamp,
-  setDoc,
 } from "firebase/firestore";
-import { format } from "date-fns";
 
 const ADMIN_PASSWORD = "As821966";
 
@@ -61,62 +57,35 @@ export default function AdminPage() {
   const [password, setPassword]           = useState("");
   const [isAuth, setIsAuth]               = useState(false);
   const [authError, setAuthError]         = useState(false);
-  const [bookings, setBookings]           = useState<Booking[]>([]);
-  const [loading, setLoading]             = useState(false);
-  const [filter, setFilter]               = useState<"all" | "pending" | "confirmed" | "cancelled">("all");
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState<"all" | "pending" | "confirmed" | "cancelled">("all");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [expandedId, setExpandedId]       = useState<string | null>(null);
-  const [toast, setToast]                 = useState<{ msg: string; type: "ok" | "err" } | null>(null);
-  const [isSlotMgmtUnlocked, setIsSlotMgmtUnlocked] = useState(false);
-  const [suiteLimits, setSuiteLimits]     = useState<Record<string, number>>({
-    "15": 6,
-    "20": 9,
-    "25": 9,
-    "30": 2
-  });
-  const [selectedPackage, setSelectedPackage] = useState<string>("20");
-  const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ msg: string; type: "ok" | "err" } | null>(null);
 
   const showToast = (msg: string, type: "ok" | "err" = "ok") => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
   };
 
-  const fetchSettingsAndBookings = async () => {
+  const fetchBookings = async () => {
     if (!db) return;
     setLoading(true);
     try {
-      // Fetch suite limits config
-      const settingsSnap = await getDoc(doc(db, "settings", "hotel"));
-      if (settingsSnap.exists() && settingsSnap.data().suiteLimits) {
-        const limits = settingsSnap.data().suiteLimits;
-        setSuiteLimits(limits);
-        if (typeof window !== "undefined") {
-          localStorage.setItem("cat_hotel_suite_limits", JSON.stringify(limits));
-        }
-      } else if (typeof window !== "undefined") {
-        // Try to load from localStorage if available
-        const localLimits = localStorage.getItem("cat_hotel_suite_limits");
-        if (localLimits) {
-          setSuiteLimits(JSON.parse(localLimits));
-        }
-      }
-
-      // Fetch bookings
       const snap = await getDocs(collection(db, "bookings"));
       const list: Booking[] = [];
       snap.forEach((d) => list.push({ id: d.id, ...d.data() } as Booking));
-      // Sort newest first (by bookingId or createdAt)
       list.sort((a, b) => b.bookingId?.localeCompare(a.bookingId ?? "") ?? 0);
       setBookings(list);
     } catch (e) {
-      showToast("Gagal memuatkan senarai tempahan dan tetapan.", "err");
+      showToast("Gagal memuatkan senarai tempahan.", "err");
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    if (isAuth) fetchSettingsAndBookings();
+    if (isAuth) fetchBookings();
   }, [isAuth]);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -262,7 +231,7 @@ export default function AdminPage() {
         </div>
         <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
           <button
-            onClick={fetchSettingsAndBookings}
+            onClick={fetchBookings}
             disabled={loading}
             className="flex-1 md:flex-none px-3 md:px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all flex items-center justify-center gap-1.5 md:gap-2 disabled:opacity-50"
           >
@@ -457,154 +426,6 @@ export default function AdminPage() {
             })}
           </div>
         )}
-
-        {/* Slot Management Section */}
-        <div className="bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-cat-primary pb-4 md:pb-6 mb-4 md:mb-6 gap-3">
-            <div>
-              <h2 className="text-xl md:text-2xl font-black text-cat-dark flex items-center gap-2">
-                ⚙️ Pengurusan Slot Hotel
-              </h2>
-              <p className="text-xs md:text-sm text-gray-500 mt-1">Konfigurasi bilangan bilik tersedia & semak jadual tempahan.</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsSlotMgmtUnlocked(!isSlotMgmtUnlocked)}
-              className="px-4 py-2 md:px-5 md:py-2.5 rounded-lg md:rounded-xl bg-cat-primary hover:bg-cat-primary/85 text-cat-dark font-black text-xs uppercase tracking-wider transition-all w-full md:w-auto text-center"
-            >
-              {isSlotMgmtUnlocked ? "Tutup Tetapan" : "Buka Tetapan"}
-            </button>
-          </div>
-
-          {isSlotMgmtUnlocked && (
-            <div className="space-y-6 md:space-y-8 animate-fade-in">
-              {/* Setting Form */}
-              <div className="bg-cat-primary/30 p-4 md:p-6 rounded-xl md:rounded-2xl border border-cat-primary space-y-4 md:space-y-6">
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-cat-dark">Had Slot Mengikut Pakej (Slots Limit per Package)</h3>
-                  <p className="text-[10px] md:text-xs text-gray-500 mt-1">Konfigurasi bilangan bilik tersedia untuk setiap pakej penginapan.</p>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                  {[
-                    { price: "15", label: "RM15 (Package A)" },
-                    { price: "20", label: "RM20 (Package B)" },
-                    { price: "25", label: "RM25 (Package C)" },
-                    { price: "30", label: "RM30 (Package D)" }
-                  ].map((item) => (
-                    <div key={item.price} className="space-y-2">
-                      <label className="block text-[10px] md:text-xs font-bold text-cat-dark">{item.label}</label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={suiteLimits[item.price] || 0}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value) || 1;
-                          setSuiteLimits(prev => ({
-                            ...prev,
-                            [item.price]: val
-                          }));
-                        }}
-                        className="w-full p-3 md:p-4 rounded-lg md:rounded-xl border border-cat-secondary bg-white font-bold text-sm focus:border-cat-accent outline-none"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  disabled={isUpdatingSettings}
-                  onClick={async () => {
-                    setIsUpdatingSettings(true);
-                    if (typeof window !== "undefined") {
-                      localStorage.setItem("cat_hotel_suite_limits", JSON.stringify(suiteLimits));
-                    }
-                    if (db) {
-                      try {
-                        await setDoc(doc(db, "settings", "hotel"), { suiteLimits }, { merge: true });
-                        showToast("Had slot berjaya dikemaskini! ✅");
-                      } catch (e) {
-                        console.error("Firestore write failed, falling back to local storage:", e);
-                        showToast("Had slot berjaya disimpan secara lokal (Firebase tiada kebenaran write).", "err");
-                      }
-                    } else {
-                      showToast("Had slot dikemaskini dalam browser sahaja.");
-                    }
-                    setIsUpdatingSettings(false);
-                  }}
-                  className="w-full md:w-auto px-6 py-3 md:px-8 md:py-4 bg-cat-accent hover:bg-cat-accent/90 text-white rounded-lg md:rounded-xl font-black text-xs md:text-sm transition-all disabled:opacity-50"
-                >
-                  {isUpdatingSettings ? "Mengemaskini..." : "Simpan Tetapan Slot"}
-                </button>
-              </div>
-
-              {/* Booked dates summary */}
-              <div>
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3 md:mb-4">
-                  <h3 className="text-base md:text-lg font-bold text-cat-dark">
-                    Jadual Penggunaan Slot - 30 Hari Akan Datang
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    <label className="text-[10px] md:text-xs font-bold text-gray-500">Pilih Pakej:</label>
-                    <select
-                      value={selectedPackage}
-                      onChange={(e) => setSelectedPackage(e.target.value)}
-                      className="p-2 md:p-3 rounded-lg md:rounded-xl border border-cat-primary bg-white text-sm font-bold focus:outline-none focus:border-cat-accent"
-                    >
-                      <option value="15">RM15 (Package A)</option>
-                      <option value="20">RM20 (Package B)</option>
-                      <option value="25">RM25 (Package C)</option>
-                      <option value="30">RM30 (Package D)</option>
-                    </select>
-                  </div>
-                </div>
-                <p className="text-[10px] md:text-xs text-gray-500 mb-3 md:mb-4">
-                  Menunjukkan bilangan bilik yang ditempah bagi pakej berbanding had limit ({suiteLimits[selectedPackage] || 9} bilik).
-                </p>
-                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-4">
-                  {Array.from({ length: 30 }).map((_, index) => {
-                    const date = new Date();
-                    date.setDate(date.getDate() + index);
-                    const dateStr = format(date, "yyyy-MM-dd");
-                    
-                    // Count total booked slots for this date and package
-                    let booked = 0;
-                    bookings.forEach((booking) => {
-                      if (booking.suitePrice === selectedPackage && dateStr >= booking.checkInDate && dateStr <= booking.checkOutDate) {
-                        booked += (booking.numberOfRooms || 1);
-                      }
-                    });
-                    
-                    const limit = suiteLimits[selectedPackage] || 9;
-                    const available = Math.max(0, limit - booked);
-                    const isFull = available <= 0;
-                    
-                    return (
-                      <div 
-                        key={index} 
-                        className={`p-2 md:p-4 rounded-xl md:rounded-2xl border text-center transition-all ${
-                          isFull 
-                            ? "bg-red-50 border-red-200 text-red-700 animate-pulse-soft" 
-                            : booked > 0 
-                              ? "bg-amber-50 border-amber-200 text-amber-700" 
-                              : "bg-gray-50 border-gray-100 text-gray-400"
-                        }`}
-                      >
-                        <div className="text-[8px] md:text-[10px] font-black uppercase tracking-wider">
-                          {format(date, "EEE, MMM d")}
-                        </div>
-                        <div className="text-lg md:text-xl font-black mt-1 md:mt-2">
-                          {booked} / {limit}
-                        </div>
-                        <div className="text-[8px] md:text-[9px] font-bold uppercase mt-0.5 md:mt-1">
-                          {isFull ? "Penuh ❌" : `${available} Slot Kosong`}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
