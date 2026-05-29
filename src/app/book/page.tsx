@@ -205,8 +205,8 @@ export default function BookingPage() {
                   <input 
                     type="number" 
                     min="1" 
-                    max="10" 
-                    {...register("numberOfRooms", { required: true, min: 1 })} 
+                    max="9" 
+                    {...register("numberOfRooms", { required: true, min: 1, max: 9 })} 
                     className="w-full p-3 md:p-4 rounded-xl md:rounded-2xl border-2 border-cat-primary focus:border-cat-accent outline-none transition-colors font-bold text-sm md:text-base" 
                   />
                   <span className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-cat-accent font-bold text-sm md:text-base">Rooms</span>
