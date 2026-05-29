@@ -206,6 +206,12 @@ export default function BookingPage() {
                     type="number" 
                     min="1" 
                     max="9" 
+                    onInput={(e) => {
+                      const value = e.target.value;
+                      if (value.length > 1 || parseInt(value) > 9) {
+                        e.target.value = value.slice(0, 1);
+                      }
+                    }}
                     {...register("numberOfRooms", { required: true, min: 1, max: 9 })} 
                     className="w-full p-3 md:p-4 rounded-xl md:rounded-2xl border-2 border-cat-primary focus:border-cat-accent outline-none transition-colors font-bold text-sm md:text-base" 
                   />
