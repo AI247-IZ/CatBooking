@@ -207,9 +207,10 @@ export default function BookingPage() {
                     min="1" 
                     max="9" 
                     onInput={(e) => {
-                      const value = e.target.value;
+                      const target = e.target as HTMLInputElement;
+                      const value = target.value;
                       if (value.length > 1 || parseInt(value) > 9) {
-                        e.target.value = value.slice(0, 1);
+                        target.value = value.slice(0, 1);
                       }
                     }}
                     {...register("numberOfRooms", { required: true, min: 1, max: 9 })} 
