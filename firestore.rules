@@ -13,9 +13,14 @@ service cloud.firestore {
       allow read: if true;
       
       // Only admin should be able to update/delete (update later with Auth)
-      allow update, delete: if false; 
+      allow update, delete: if true; 
     }
     
+    // Settings collection rules
+    match /settings/{settingsId} {
+      allow read, write: if true;
+    }
+
     // Default rule: Lock everything else
     match /{document=**} {
       allow read, write: if false;

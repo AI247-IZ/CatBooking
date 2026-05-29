@@ -8,6 +8,22 @@
   --color-cat-dark: #1f2937;
   
   --font-sans: "Quicksand", "Inter", sans-serif;
+  
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 3s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(0.98); }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -18,5 +34,12 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--color-cat-dark);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }

@@ -22,28 +22,43 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${quicksand.variable} antialiased min-h-screen flex flex-col`}>
         <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-cat-secondary">
-          <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Link href="/" className="text-2xl font-bold text-cat-accent hover:opacity-80 transition">
-                🐾 RumahKucing
+          <div className="max-w-6xl mx-auto px-4 h-16 grid grid-cols-3 items-center">
+            {/* Left: Logo */}
+            <div className="flex justify-start">
+              <Link href="/" className="text-2xl font-bold text-cat-accent hover:opacity-80 transition flex items-center gap-2">
+                🐾 <span className="hidden sm:inline">RumahKucing</span>
               </Link>
             </div>
-            <nav className="hidden md:flex gap-6 font-medium">
-              <Link href="/" className="hover:text-cat-accent transition">Home</Link>
-              <Link href="#services" className="hover:text-cat-accent transition">Services</Link>
-              <Link href="#gallery" className="hover:text-cat-accent transition">Gallery</Link>
-              <Link href="/admin" className="hover:text-cat-accent transition">Admin</Link>
+
+            {/* Center: Navigation */}
+            <nav className="hidden md:flex gap-8 font-bold justify-center text-sm tracking-wide">
+              <Link href="/" className="text-cat-dark hover:text-cat-accent transition-colors relative group">
+                Home
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cat-accent transition-all group-hover:w-full"></span>
+              </Link>
+              <Link href="#services" className="text-cat-dark hover:text-cat-accent transition-colors relative group">
+                Services
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cat-accent transition-all group-hover:w-full"></span>
+              </Link>
+              <Link href="#gallery" className="text-cat-dark hover:text-cat-accent transition-colors relative group">
+                Gallery
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cat-accent transition-all group-hover:w-full"></span>
+              </Link>
             </nav>
-            <Link href="/book" className="bg-cat-accent text-white px-6 py-2 rounded-full font-bold shadow-md hover:bg-cat-accent/90 transition hover:-translate-y-1">
-              Book Now
-            </Link>
+
+            {/* Right: Action Button */}
+            <div className="flex justify-end">
+              <Link href="/book" className="bg-cat-accent text-white px-8 py-2.5 rounded-full font-black text-sm shadow-lg shadow-cat-accent/20 hover:bg-cat-accent/90 transition hover:-translate-y-0.5 active:translate-y-0">
+                Book Now
+              </Link>
+            </div>
           </div>
         </header>
         <main className="flex-1">
           {children}
         </main>
         <footer className="bg-cat-dark text-white py-8 mt-12">
-          <div className="container mx-auto px-4 text-center">
+          <div className="max-w-6xl mx-auto px-4 text-center">
             <p>&copy; 2026 Purrfect Cat Boarding. All rights reserved.</p>
           </div>
         </footer>
