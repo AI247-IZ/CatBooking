@@ -340,11 +340,22 @@ export default function BookingPage() {
                       }
                     }}
                     {...register("numberOfRooms", { required: true, min: 1, max: 9 })} 
-                    className="w-full p-3 md:p-4 rounded-xl md:rounded-2xl border-2 border-cat-primary focus:border-cat-accent outline-none transition-colors font-bold text-sm md:text-base" 
+                    className={`w-full p-3 md:p-4 rounded-xl md:rounded-2xl border-2 transition-colors font-bold text-sm md:text-base ${!isRangeAvailable ? "border-red-300 focus:border-red-500" : "border-cat-primary focus:border-cat-accent"} outline-none`} 
                   />
                   <span className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-cat-accent font-bold text-sm md:text-base">Rooms</span>
                 </div>
                 <p className="text-[9px] md:text-[10px] font-bold text-gray-400 mt-1 uppercase ml-1">1 Room = 1 Slot</p>
+                <p className={`text-[9px] md:text-[10px] font-bold mt-1 ml-1 ${!isRangeAvailable ? "text-red-600" : "text-green-600"}`}>
+                  {(() => {
+                    const available = suiteLimits[suitePrice] || 9; // Default if no booking data
+                    
+                    if (!isRangeAvailable) {
+                      return `⚠️ TIDAK BOLEH! Hanya ${(suiteLimits[suitePrice] || 9) - maxBookedRoomsOnLimitDate} bilik kosong untuk tempoh yang dipilih (anda pilih ${numRooms} bilik)`;
+                    }
+                    
+                    return `✅ ${available} bilik tersedia untuk pakej ini`;
+                  })()}
+                </p>
               </div>
 
               <div className="space-y-2">
