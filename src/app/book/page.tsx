@@ -288,6 +288,7 @@ export default function BookingPage() {
                 day_range_middle: "bg-cat-primary text-cat-dark rounded-none",
                 day_range_start: "bg-cat-accent text-white rounded-l-full",
                 day_range_end: "bg-cat-accent text-white rounded-r-full",
+                day_disabled: "text-gray-300 cursor-not-allowed opacity-50",
                 chevron: "fill-cat-accent",
               }}
             />
