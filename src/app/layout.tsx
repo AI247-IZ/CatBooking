@@ -22,16 +22,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${quicksand.variable} antialiased min-h-screen flex flex-col`}>
         <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-cat-secondary">
-          <div className="max-w-6xl mx-auto px-4 h-16 grid grid-cols-3 items-center">
+          <div className="max-w-6xl mx-auto px-4 h-14 md:h-16 grid grid-cols-3 items-center">
             {/* Left: Logo */}
             <div className="flex justify-start">
-              <Link href="/" className="text-2xl font-bold text-cat-accent hover:opacity-80 transition flex items-center gap-2">
+              <Link href="/" className="text-xl md:text-2xl font-bold text-cat-accent hover:opacity-80 transition flex items-center gap-2">
                 🐾 <span className="hidden sm:inline">RumahKucing</span>
               </Link>
             </div>
 
             {/* Center: Navigation */}
-            <nav className="hidden md:flex gap-8 font-bold justify-center text-sm tracking-wide">
+            <nav className="hidden md:flex gap-6 md:gap-8 font-bold justify-center text-sm tracking-wide">
               <Link href="/" className="text-cat-dark hover:text-cat-accent transition-colors relative group">
                 Home
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cat-accent transition-all group-hover:w-full"></span>
@@ -48,7 +48,7 @@ export default function RootLayout({
 
             {/* Right: Action Button */}
             <div className="flex justify-end">
-              <Link href="/book" className="bg-cat-accent text-white px-8 py-2.5 rounded-full font-black text-sm shadow-lg shadow-cat-accent/20 hover:bg-cat-accent/90 transition hover:-translate-y-0.5 active:translate-y-0">
+              <Link href="/book" className="bg-cat-accent text-white px-5 md:px-8 py-2 md:py-2.5 rounded-full font-black text-xs md:text-sm shadow-lg shadow-cat-accent/20 hover:bg-cat-accent/90 transition hover:-translate-y-0.5 active:translate-y-0">
                 Book Now
               </Link>
             </div>
@@ -57,9 +57,9 @@ export default function RootLayout({
         <main className="flex-1">
           {children}
         </main>
-        <footer className="bg-cat-dark text-white py-8 mt-12">
+        <footer className="bg-cat-dark text-white py-6 md:py-8 mt-10 md:mt-12">
           <div className="max-w-6xl mx-auto px-4 text-center">
-            <p>&copy; 2026 Purrfect Cat Boarding. All rights reserved.</p>
+            <p className="text-xs md:text-sm">&copy; 2026 Purrfect Cat Boarding. All rights reserved.</p>
           </div>
         </footer>
       </body>
