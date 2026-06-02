@@ -187,7 +187,7 @@ export default function Home() {
           </div>
           <div className="col-span-2 relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] group shadow-xl">
             <img 
-              src="/gallery/cat8.jpg" 
+              src="/gallery/cat8.jpeg" 
               alt="Cat 8" 
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
             />
