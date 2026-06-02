@@ -74,7 +74,7 @@ export default function Home() {
             <ul className="text-left text-xs space-y-3 md:space-y-4 mb-6 md:mb-8 border-t border-cat-primary pt-4 md:pt-6 font-medium">
               <li className="flex items-center gap-3 text-gray-600"><span className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-[10px] font-bold">✓</span> Saiz sangkar: 2x2x2.5</li>
               <li className="flex items-center gap-3 text-gray-600"><span className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-[10px] font-bold">✓</span> Makanan sendiri</li>
-              <li className="flex items-center gap-3 text-gray-600"><span className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-[10px] font-bold">✓</span> Air bersih 24 jam</li>
+              <li className="flex items-center gap-3 text-gray-600"><span className="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-[10px] font-bold">✓</span> Pasir kucing disediakan</li>
             </ul>
             <Link href="/book" className="block w-full py-3 md:py-4 rounded-xl border-2 border-cat-primary text-cat-dark font-black hover:bg-cat-primary transition-all tracking-wide text-sm">Pilih Basic</Link>
           </div>

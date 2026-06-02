@@ -33,7 +33,7 @@ function PaymentContent() {
     setIsSubmitting(true);
 
     const message = 
-      `Assalamualaikum, saya *${name}* telah membuat tempahan di Purrfect Boarding.\n\n` +
+      `Assalamualaikum, saya *${name}* telah membuat tempahan di Rumah Kucing.\n\n` +
       `📋 *Maklumat Tempahan:*\n` +
       `• Booking ID: *${bookingId}*\n` +
       `• Pakej: *${packageLabel}*\n` +

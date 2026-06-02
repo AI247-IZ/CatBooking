@@ -163,7 +163,7 @@ export default function AdminPage() {
               🐾
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-cat-dark">Admin Portal</h1>
-            <p className="text-gray-500 text-xs md:text-sm mt-1">Purrfect Boarding Management</p>
+            <p className="text-gray-500 text-xs md:text-sm mt-1">Rumah Kucing Management</p>
           </div>
 
           <form
@@ -226,7 +226,7 @@ export default function AdminPage() {
           </div>
           <div>
             <h1 className="text-lg md:text-xl font-black text-white">Admin Dashboard</h1>
-            <p className="text-white/40 text-[10px] md:text-xs">Purrfect Boarding — Pengurusan Tempahan</p>
+            <p className="text-white/40 text-[10px] md:text-xs">Rumah Kucing — Pengurusan Tempahan</p>
           </div>
         </div>
         <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">

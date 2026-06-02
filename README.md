@@ -1,4 +1,4 @@
-# Purrfect Cat Boarding Booking System
+# Rumah Kucing Booking System
 
 This is a full-stack Next.js (App Router) application built with Tailwind CSS, Prisma, and PostgreSQL for managing cat boarding bookings.
 

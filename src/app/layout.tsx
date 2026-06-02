@@ -9,7 +9,7 @@ const quicksand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: "Purrfect Boarding | Premium Cat Care",
+  title: "Rumah Kucing | Premium Cat Care",
   description: "Book your cat's stay at our premium boarding facility.",
 };
 
@@ -59,7 +59,7 @@ export default function RootLayout({
         </main>
         <footer className="bg-cat-dark text-white py-6 md:py-8 mt-10 md:mt-12">
           <div className="max-w-6xl mx-auto px-4 text-center">
-            <p className="text-xs md:text-sm">&copy; 2026 Purrfect Cat Boarding. All rights reserved.</p>
+            <p className="text-xs md:text-sm">&copy; 2026 ASMAJU JAYA ENTERPRISE. All rights reserved.</p>
           </div>
         </footer>
       </body>
