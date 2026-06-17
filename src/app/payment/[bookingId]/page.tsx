@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 
-const WHATSAPP_NUMBER = "60139267512";
+const WHATSAPP_NUMBER = "60182318266";
 
 const PACKAGE_LABELS: Record<string, string> = {
   "15": "Package A (RM15/hari)",
