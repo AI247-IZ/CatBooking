@@ -159,13 +159,21 @@ export default function Home() {
                 )}
 
                 {pkg.image && (
-                  <div className="relative z-10 w-full h-28 md:h-32 rounded-2xl md:rounded-3xl overflow-hidden mb-4 md:mb-6 shadow-inner">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewImage(pkg.image)}
+                    aria-label={`Lihat gambar bilik ${pkg.title}`}
+                    className="relative z-10 block w-full h-28 md:h-32 rounded-2xl md:rounded-3xl overflow-hidden mb-4 md:mb-6 shadow-inner cursor-zoom-in"
+                  >
                     <img
                       src={pkg.image}
                       alt={`Gambar bilik ${pkg.title}`}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                  </div>
+                    <span className="absolute inset-0 flex items-center justify-center bg-cat-dark/0 group-hover:bg-cat-dark/30 transition-colors">
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white text-2xl">🔍</span>
+                    </span>
+                  </button>
                 )}
 
                 <div 
@@ -336,14 +344,14 @@ export default function Home() {
       {/* Image Preview Modal */}
       {previewImage && (
         <div
-          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setPreviewImage(null)}
         >
           <button
             type="button"
             onClick={() => setPreviewImage(null)}
             aria-label="Tutup"
-            className="absolute top-4 right-4 md:top-6 md:right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl flex items-center justify-center transition-colors"
+            className="absolute top-4 right-4 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl flex items-center justify-center transition-colors"
           >
             ✕
           </button>
@@ -351,7 +359,7 @@ export default function Home() {
             src={previewImage}
             alt="Gambar bilik"
             onClick={(e) => e.stopPropagation()}
-            className="max-w-full max-h-[85vh] object-contain rounded-2xl md:rounded-3xl shadow-2xl"
+            className="block w-auto h-auto max-w-[90vw] max-h-[85vh] object-contain rounded-2xl md:rounded-3xl shadow-2xl"
           />
         </div>
       )}
