@@ -2,6 +2,24 @@
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 
+function CatHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div className="text-center mb-12 md:mb-20">
+      <span className="text-cat-accent font-black text-xs uppercase tracking-[0.3em] mb-4 md:mb-6 block">{eyebrow}</span>
+      <div className="relative inline-block">
+        {/* Telinga kucing */}
+        <span aria-hidden="true" className="absolute z-0 -top-2.5 md:-top-3.5 left-4 md:left-10 w-0 h-0 border-l-[9px] md:border-l-[13px] border-l-transparent border-r-[9px] md:border-r-[13px] border-r-transparent border-b-[14px] md:border-b-[20px] border-b-white -rotate-[18deg]" />
+        <span aria-hidden="true" className="absolute z-0 -top-2.5 md:-top-3.5 right-4 md:right-10 w-0 h-0 border-l-[9px] md:border-l-[13px] border-l-transparent border-r-[9px] md:border-r-[13px] border-r-transparent border-b-[14px] md:border-b-[20px] border-b-white rotate-[18deg]" />
+        {/* Bingkai muka kucing */}
+        <h2 className="relative z-10 bg-white border-[3px] md:border-4 border-white shadow-xl rounded-[1.5rem] md:rounded-[2.25rem] px-5 md:px-12 py-3 md:py-5 text-2xl md:text-5xl lg:text-6xl font-black text-cat-dark leading-tight">
+          {title}
+        </h2>
+      </div>
+      <div className="w-16 md:w-24 h-2 bg-cat-accent mx-auto rounded-full mt-6 md:mt-8" />
+    </div>
+  );
+}
+
 export default function Home() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,7 +62,7 @@ export default function Home() {
             Bukan Sekadar <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cat-accent to-pink-500">Tempat Tinggal</span>
           </h1>
-          <p className="max-w-xl md:max-w-2xl mx-auto text-base md:text-xl text-gray-500 mb-8 md:mb-12 leading-relaxed font-medium">
+          <p className="max-w-xl md:max-w-2xl mx-auto text-base md:text-xl text-black mb-8 md:mb-12 leading-relaxed font-medium">
             Berikan si bulu anda penjagaan dan layanan yang baik. Keselesaan, kebersihan, dan kasih sayang dijamin 100%.
           </p>
 
@@ -72,7 +90,7 @@ export default function Home() {
             <div key={i} className="glass-card p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl text-center hover:-translate-y-2 transition-all duration-500 group">
               <div className="text-2xl md:text-3xl mb-2 md:mb-3 transform group-hover:scale-125 transition-transform">{stat.icon}</div>
               <div className="text-2xl md:text-3xl font-black text-cat-dark mb-1">{stat.val}</div>
-              <div className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{stat.label}</div>
+              <div className="text-[9px] md:text-[10px] font-black text-black uppercase tracking-widest">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -80,11 +98,7 @@ export default function Home() {
 
       {/* Services Section */}
       <section id="services" className="px-4 max-w-6xl mx-auto pt-10 md:pt-20">
-        <div className="text-center mb-12 md:mb-20">
-          <span className="text-cat-accent font-black text-xs uppercase tracking-[0.3em] mb-3 md:mb-4 block">Our Suites</span>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-cat-dark mb-3 md:mb-4">Pilihan Pakej Penginapan</h2>
-          <div className="w-16 md:w-24 h-2 bg-cat-accent mx-auto rounded-full"></div>
-        </div>
+        <CatHeading eyebrow="Our Suites" title="Pilihan Pakej Penginapan" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-stretch">
           {[
@@ -144,7 +158,7 @@ export default function Home() {
                 className={`rounded-[2.5rem] shadow-xl p-6 md:p-8 text-center border transition-all duration-500 relative overflow-hidden group ${
                   isHovered 
                     ? "bg-cat-dark border-cat-accent md:scale-105 z-10" 
-                    : "bg-white border-cat-primary hover:shadow-2xl"
+                    : "bg-[#ffb6c1] border-cat-primary hover:shadow-2xl"
                 }`}
                 onMouseEnter={() => setHoveredPackage(pkg.id)}
                 onMouseLeave={() => setHoveredPackage(null)}
@@ -191,16 +205,16 @@ export default function Home() {
                   {pkg.title}
                 </h3>
                 
-                <p className={`text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-4 md:mb-6 relative z-10 ${isHovered ? "text-white/40" : "text-gray-400"}`}>
+                <p className={`text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-4 md:mb-6 relative z-10 ${isHovered ? "text-white/40" : "text-black"}`}>
                   {pkg.subtitle}
                 </p>
                 
                 <div className={`font-black text-4xl md:text-6xl mb-1 relative z-10 ${isHovered ? "text-cat-accent" : "text-cat-accent"}`}>
-                  {pkg.price} <span className={`text-xs font-medium tracking-normal ${isHovered ? "text-white/30" : "text-gray-400"}`}>/ day</span>
+                  {pkg.price} <span className={`text-xs font-medium tracking-normal ${isHovered ? "text-white/30" : "text-black"}`}>/ day</span>
                 </div>
                 
                 {pkg.extra && (
-                  <p className={`text-[8px] md:text-[9px] font-black uppercase tracking-widest mb-6 md:mb-8 relative z-10 ${isHovered ? "text-white/40" : "text-gray-400"}`}>
+                  <p className={`text-[8px] md:text-[9px] font-black uppercase tracking-widest mb-6 md:mb-8 relative z-10 ${isHovered ? "text-white/40" : "text-black"}`}>
                     {pkg.extra}
                   </p>
                 )}
@@ -209,7 +223,7 @@ export default function Home() {
                   isHovered ? "border-white/10" : "border-cat-primary"
                 }`}>
                   {pkg.features.map((feat, idx) => (
-                    <li key={idx} className={`flex items-center gap-3 ${isHovered ? "text-white/80" : "text-gray-600"}`}>
+                    <li key={idx} className={`flex items-center gap-3 ${isHovered ? "text-white/80" : "text-black"}`}>
                       <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                         isHovered 
                           ? "bg-cat-accent text-white" 
@@ -238,69 +252,33 @@ export default function Home() {
 
       {/* Gallery Section */}
       <section id="gallery" className="px-4 max-w-6xl mx-auto py-16 md:py-24">
-        <div className="text-center mb-12 md:mb-20">
-          <span className="text-cat-accent font-black text-xs uppercase tracking-[0.3em] mb-3 md:mb-4 block">Visual Tour</span>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-cat-dark mb-3 md:mb-4">Galeri Kami</h2>
-          <div className="w-16 md:w-20 h-1.5 bg-cat-accent/20 mx-auto rounded-full"></div>
-        </div>
+        <CatHeading eyebrow="Visual Tour" title="Galeri Kami" />
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[250px]">
-          <div className="col-span-2 row-span-2 relative overflow-hidden rounded-[2rem] md:rounded-[3rem] group shadow-2xl">
-            <img 
-              src="/gallery/cat1.jpg" 
-              alt="Cat 1" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-          </div>
-          <div className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] group shadow-xl">
-            <img 
-              src="/gallery/cat2.jpg" 
-              alt="Cat 2" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-          </div>
-          <div className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] group shadow-xl">
-            <img 
-              src="/gallery/cat3.jpg" 
-              alt="Cat 3" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-          </div>
-          <div className="col-span-2 relative overflow-hidden rounded-[1.75rem] md:rounded-[2.5rem] group shadow-xl">
-            <img 
-              src="/gallery/cat4.jpg" 
-              alt="Cat 4" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-          </div>
-          <div className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] group shadow-xl">
-            <img 
-              src="/gallery/cat5.jpg" 
-              alt="Cat 5" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-          </div>
-          <div className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] group shadow-xl">
-            <img 
-              src="/gallery/cat6.jpg" 
-              alt="Cat 6" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-          </div>
-          <div className="col-span-2 relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] group shadow-xl">
-            <img 
-              src="/gallery/cat7.jpg" 
-              alt="Cat 7" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-          </div>
-          <div className="col-span-2 relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] group shadow-xl">
-            <img 
-              src="/gallery/cat8.jpeg" 
-              alt="Cat 8" 
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-          </div>
+          {[
+            { src: "/gallery/cat1.jpg", alt: "Cat 1", wrap: "col-span-2 row-span-2 rounded-[2rem] md:rounded-[3rem] shadow-2xl" },
+            { src: "/gallery/cat2.jpg", alt: "Cat 2", wrap: "rounded-[1.5rem] md:rounded-[2rem] shadow-xl" },
+            { src: "/gallery/cat3.jpg", alt: "Cat 3", wrap: "rounded-[1.5rem] md:rounded-[2rem] shadow-xl" },
+            { src: "/gallery/cat4.jpg", alt: "Cat 4", wrap: "col-span-2 rounded-[1.75rem] md:rounded-[2.5rem] shadow-xl" },
+            { src: "/gallery/cat5.jpg", alt: "Cat 5", wrap: "rounded-[1.5rem] md:rounded-[2rem] shadow-xl" },
+            { src: "/gallery/cat6.jpg", alt: "Cat 6", wrap: "rounded-[1.5rem] md:rounded-[2rem] shadow-xl" },
+            { src: "/gallery/cat7.jpg", alt: "Cat 7", wrap: "col-span-2 rounded-[1.5rem] md:rounded-[2rem] shadow-xl" },
+            { src: "/gallery/cat8.jpeg", alt: "Cat 8", wrap: "col-span-2 rounded-[1.5rem] md:rounded-[2rem] shadow-xl" }
+          ].map((g, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setPreviewImage(g.src)}
+              aria-label={`Lihat gambar ${g.alt}`}
+              className={`relative block w-full h-full overflow-hidden group cursor-zoom-in ${g.wrap}`}
+            >
+              <img
+                src={g.src}
+                alt={g.alt}
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              />
+            </button>
+          ))}
         </div>
       </section>
 
@@ -357,7 +335,7 @@ export default function Home() {
           </button>
           <img
             src={previewImage}
-            alt="Gambar bilik"
+            alt="Pratonton gambar"
             onClick={(e) => e.stopPropagation()}
             className="block w-auto h-auto max-w-[90vw] max-h-[85vh] object-contain rounded-2xl md:rounded-3xl shadow-2xl"
           />

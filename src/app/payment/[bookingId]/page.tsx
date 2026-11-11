@@ -57,50 +57,50 @@ function PaymentContent() {
           <span className="text-xl md:text-2xl">💳</span>
         </div>
         <h1 className="text-2xl md:text-4xl font-black text-cat-dark mb-2">Finalize Booking</h1>
-        <p className="text-gray-500 text-sm md:text-base">Review your booking and proceed to confirmation.</p>
+        <p className="text-black text-sm md:text-base">Review your booking and proceed to confirmation.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8 items-start">
         {/* Summary Side */}
         <div className="md:col-span-2 space-y-5 md:space-y-6">
-          <div className="bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary relative overflow-hidden">
+          <div className="bg-[#ffb6c1] p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary relative overflow-hidden">
             <div className="absolute top-0 right-0 w-16 md:w-20 h-16 md:h-20 bg-cat-primary/50 rounded-bl-full -mr-3 md:-mr-4 -mt-3 md:-mt-4"></div>
             
             <h2 className="text-lg md:text-xl font-bold mb-5 md:mb-6 text-cat-dark relative z-10">Booking Summary</h2>
             
             <div className="space-y-3 md:space-y-4 relative z-10">
               <div className="flex justify-between items-center py-2.5 md:py-3 border-b border-cat-primary border-dashed">
-                <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">Booking ID</span>
+                <span className="text-[10px] md:text-xs font-black text-black uppercase tracking-widest">Booking ID</span>
                 <span className="font-bold text-cat-dark text-sm md:text-base">{bookingId}</span>
               </div>
 
               <div className="flex justify-between items-center py-2.5 md:py-3 border-b border-cat-primary border-dashed">
-                <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">Package</span>
+                <span className="text-[10px] md:text-xs font-black text-black uppercase tracking-widest">Package</span>
                 <span className="font-bold text-cat-dark text-sm md:text-base">{packageLabel}</span>
               </div>
 
               <div className="flex justify-between items-center py-2.5 md:py-3 border-b border-cat-primary border-dashed">
-                <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">Number of Rooms</span>
+                <span className="text-[10px] md:text-xs font-black text-black uppercase tracking-widest">Number of Rooms</span>
                 <span className="font-bold text-cat-dark text-sm md:text-base">{rooms} Room(s)</span>
               </div>
 
               <div className="flex justify-between items-center py-2.5 md:py-3 border-b border-cat-primary border-dashed">
-                <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">Check-in</span>
+                <span className="text-[10px] md:text-xs font-black text-black uppercase tracking-widest">Check-in</span>
                 <span className="font-bold text-cat-dark text-sm md:text-base">{checkIn}</span>
               </div>
 
               <div className="flex justify-between items-center py-2.5 md:py-3 border-b border-cat-primary border-dashed">
-                <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">Check-out</span>
+                <span className="text-[10px] md:text-xs font-black text-black uppercase tracking-widest">Check-out</span>
                 <span className="font-bold text-cat-dark text-sm md:text-base">{checkOut}</span>
               </div>
 
               <div className="flex justify-between items-center py-2.5 md:py-3 border-b border-cat-primary border-dashed">
-                <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">Total Stay ({days} days)</span>
+                <span className="text-[10px] md:text-xs font-black text-black uppercase tracking-widest">Total Stay ({days} days)</span>
                 <span className="font-bold text-cat-dark text-sm md:text-base">RM{totalAmount.toFixed(2)}</span>
               </div>
               
               <div className="flex justify-between items-center py-2.5 md:py-3 border-b border-cat-primary border-dashed">
-                <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">Payment Plan</span>
+                <span className="text-[10px] md:text-xs font-black text-black uppercase tracking-widest">Payment Plan</span>
                 <span className="font-bold text-cat-dark text-sm md:text-base capitalize">{paymentType}</span>
               </div>
               
@@ -125,10 +125,10 @@ function PaymentContent() {
 
         {/* Action Side */}
         <div className="md:col-span-3">
-          <div className="bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary space-y-6 md:space-y-8">
+          <div className="bg-[#ffb6c1] p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary space-y-6 md:space-y-8">
             <div className="space-y-3 md:space-y-4">
               <h2 className="text-xl md:text-2xl font-black text-cat-dark">Ready to Confirm?</h2>
-              <p className="text-gray-500 text-sm md:text-base leading-relaxed">
+              <p className="text-black text-sm md:text-base leading-relaxed">
                 Klik butang di bawah untuk hantar maklumat tempahan terus kepada kami melalui <span className="font-bold text-green-600">WhatsApp</span>. Kami akan sahkan tempahan anda secepat mungkin.
               </p>
             </div>
@@ -136,7 +136,7 @@ function PaymentContent() {
             <div className="p-4 md:p-6 bg-green-50 rounded-xl md:rounded-2xl border-2 border-dashed border-green-200">
               <div className="flex items-start gap-3 md:gap-4">
                 <div className="w-9 h-9 md:w-10 md:h-10 bg-white rounded-full flex items-center justify-center shadow-sm flex-shrink-0 text-lg md:text-xl">💬</div>
-                <div className="text-xs md:text-sm text-gray-600">
+                <div className="text-xs md:text-sm text-black">
                   <p className="font-bold text-cat-dark mb-1">Cara Pengesahan:</p>
                   <ul className="list-disc ml-4 space-y-1 text-[10px] md:text-xs">
                     <li>Klik <span className="font-bold text-green-600">"Hantar ke WhatsApp"</span> di bawah</li>
@@ -171,7 +171,7 @@ function PaymentContent() {
             
             <a 
               href="/"
-              className="block w-full text-center text-gray-400 font-bold text-xs md:text-sm hover:text-cat-dark transition-colors"
+              className="block w-full text-center text-black font-bold text-xs md:text-sm hover:text-cat-dark transition-colors"
             >
               Kembali ke Laman Utama
             </a>
@@ -184,7 +184,7 @@ function PaymentContent() {
 
 export default function PaymentPage() {
   return (
-    <Suspense fallback={<div className="text-center py-16 md:py-20 text-gray-500 text-sm md:text-base">Loading payment details...</div>}>
+    <Suspense fallback={<div className="text-center py-16 md:py-20 text-black text-sm md:text-base">Loading payment details...</div>}>
       <PaymentContent />
     </Suspense>
   );

@@ -4,7 +4,7 @@
   --color-cat-primary: #fdf2f8; /* Soft pink */
   --color-cat-secondary: #fbcfe8;
   --color-cat-accent: #f472b6;
-  --color-cat-text: #4b5563;
+  --color-cat-text: #000000;
   --color-cat-dark: #1f2937;
   
   --font-sans: "Quicksand", "Inter", sans-serif;
@@ -27,7 +27,7 @@ html {
 }
 
 body {
-  background-color: var(--color-cat-primary);
+  background-color: #ff69b4;
   color: var(--color-cat-text);
   font-family: var(--font-sans);
 }
@@ -39,7 +39,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: #ffb6c1;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }

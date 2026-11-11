@@ -223,12 +223,12 @@ export default function BookingPage() {
     <div className="max-w-6xl mx-auto py-8 md:py-12 px-4 space-y-8 md:space-y-12">
       <div className="text-center mb-8 md:mb-12">
         <h1 className="text-3xl md:text-4xl font-black mb-2 text-cat-dark">Book a Stay</h1>
-        <p className="text-gray-500 text-sm md:text-base">Pick your dates and fill in the details for your furry friend.</p>
+        <p className="text-black text-sm md:text-base">Pick your dates and fill in the details for your furry friend.</p>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
         {/* Calendar Side */}
-        <div className="lg:col-span-5 bg-white p-4 md:p-6 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary flex flex-col items-center">
+        <div className="lg:col-span-5 bg-[#ffb6c1] p-4 md:p-6 rounded-2xl md:rounded-3xl shadow-xl border border-cat-secondary flex flex-col items-center">
           <div className="w-full flex justify-between items-center mb-4 md:mb-6 px-2">
             <h2 className="text-lg md:text-xl font-bold text-cat-dark">1. Select Stay Period</h2>
             {range?.from && (
@@ -288,7 +288,7 @@ export default function BookingPage() {
                 day_range_middle: "bg-cat-primary text-cat-dark rounded-none",
                 day_range_start: "bg-cat-accent text-white rounded-l-full",
                 day_range_end: "bg-cat-accent text-white rounded-r-full",
-                day_disabled: "text-gray-300 cursor-not-allowed opacity-50",
+                day_disabled: "text-black cursor-not-allowed opacity-50",
                 chevron: "fill-cat-accent",
               }}
             />
@@ -296,18 +296,18 @@ export default function BookingPage() {
           
           <div className="mt-4 md:mt-6 grid grid-cols-2 gap-3 md:gap-4 w-full">
             <div className="p-3 md:p-4 rounded-xl md:rounded-2xl border border-dashed border-cat-secondary bg-white">
-              <span className="block text-[9px] md:text-[10px] uppercase font-black text-gray-400 mb-1">Check-in</span>
+              <span className="block text-[9px] md:text-[10px] uppercase font-black text-black mb-1">Check-in</span>
               <span className="font-bold text-cat-dark text-sm md:text-base">{range?.from ? format(range.from, "dd/MM/yyyy") : "--/--/----"}</span>
             </div>
             <div className="p-3 md:p-4 rounded-xl md:rounded-2xl border border-dashed border-cat-secondary bg-white">
-              <span className="block text-[9px] md:text-[10px] uppercase font-black text-gray-400 mb-1">Check-out</span>
+              <span className="block text-[9px] md:text-[10px] uppercase font-black text-black mb-1">Check-out</span>
               <span className="font-bold text-cat-dark text-sm md:text-base">{range?.to ? format(range.to, "dd/MM/yyyy") : "--/--/----"}</span>
             </div>
           </div>
         </div>
 
         {/* Form Side */}
-        <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-7 bg-white p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl space-y-6 md:space-y-8 border border-cat-secondary">
+        <form onSubmit={handleSubmit(onSubmit)} className="lg:col-span-7 bg-[#ffb6c1] p-6 md:p-8 rounded-2xl md:rounded-3xl shadow-xl space-y-6 md:space-y-8 border border-cat-secondary">
           <div>
             <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6 text-cat-dark flex items-center gap-2">
               <span className="w-7 h-7 md:w-8 md:h-8 bg-cat-primary text-cat-accent rounded-full flex items-center justify-center text-xs md:text-sm">2</span>
@@ -344,7 +344,7 @@ export default function BookingPage() {
                   />
                   <span className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-cat-accent font-bold text-sm md:text-base">Rooms</span>
                 </div>
-                <p className="text-[9px] md:text-[10px] font-bold text-gray-400 mt-1 uppercase ml-1">1 Room = 1 Slot</p>
+                <p className="text-[9px] md:text-[10px] font-bold text-black mt-1 uppercase ml-1">1 Room = 1 Slot</p>
                 <p className={`text-[9px] md:text-[10px] font-bold mt-1 ml-1 ${!isRangeAvailable ? "text-red-600" : "text-green-600"}`}>
                   {(() => {
                     const available = suiteLimits[suitePrice] || 9; // Default if no booking data
@@ -370,7 +370,7 @@ export default function BookingPage() {
                   />
                   <span className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-cat-accent font-bold text-sm md:text-base">Cats</span>
                 </div>
-                <p className={`text-[9px] md:text-[10px] font-bold text-gray-400 mt-1 uppercase ml-1 ${suitePrice === "15" ? "invisible" : ""}`}>
+                <p className={`text-[9px] md:text-[10px] font-bold text-black mt-1 uppercase ml-1 ${suitePrice === "15" ? "invisible" : ""}`}>
                   + RM10 each extra cat
                 </p>
               </div>
@@ -403,7 +403,7 @@ export default function BookingPage() {
           <div className="space-y-2">
             <label className="block text-sm font-bold text-cat-dark ml-1 flex items-center gap-2">
               Special Instructions 
-              <span className="text-[9px] md:text-[10px] font-normal text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full uppercase">Optional</span>
+              <span className="text-[9px] md:text-[10px] font-normal text-black bg-gray-100 px-2 py-0.5 rounded-full uppercase">Optional</span>
             </label>
             <textarea {...register("notes")} className="w-full p-3 md:p-4 rounded-xl md:rounded-2xl border-2 border-cat-primary focus:border-cat-accent outline-none min-h-[100px] md:min-h-[120px] transition-colors resize-none text-sm md:text-base" placeholder="Allergies, medication, habits..."></textarea>
           </div>
@@ -417,7 +417,7 @@ export default function BookingPage() {
                 className={`p-3 md:p-4 rounded-xl md:rounded-2xl border-2 transition-all text-sm md:text-base font-bold ${
                   paymentType === "full" 
                     ? "border-cat-accent bg-cat-accent/5 text-cat-accent shadow-md" 
-                    : "border-cat-primary bg-white text-gray-400 hover:border-cat-accent/30"
+                    : "border-cat-primary bg-white text-black hover:border-cat-accent/30"
                 }`}
               >
                 Full Payment
@@ -428,7 +428,7 @@ export default function BookingPage() {
                 className={`p-3 md:p-4 rounded-xl md:rounded-2xl border-2 transition-all text-sm md:text-base font-bold ${
                   paymentType === "deposit" 
                     ? "border-cat-accent bg-cat-accent/5 text-cat-accent shadow-md" 
-                    : "border-cat-primary bg-white text-gray-400 hover:border-cat-accent/30"
+                    : "border-cat-primary bg-white text-black hover:border-cat-accent/30"
                 }`}
               >
                 Deposit (RM{depositAmount})
