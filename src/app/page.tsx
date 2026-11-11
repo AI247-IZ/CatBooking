@@ -80,17 +80,17 @@ export default function Home() {
 
       {/* Stats Section */}
       <section className="max-w-6xl mx-auto px-4 -mt-10 md:-mt-16 relative z-20">
-        <div className="grid grid-cols-2 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-3 md:gap-6">
           {[
             { label: "Kucing Gembira", val: "500+", icon: "😺" },
             { label: "Penjagaan 24/7", val: "Sentiasa", icon: "⏰" },
             { label: "Kebersihan", val: "Tiada Bau", icon: "✨" },
             { label: "Update Harian", val: "Video/Foto", icon: "📱" }
           ].map((stat, i) => (
-            <div key={i} className="glass-card p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl text-center hover:-translate-y-2 transition-all duration-500 group">
-              <div className="text-2xl md:text-3xl mb-2 md:mb-3 transform group-hover:scale-125 transition-transform">{stat.icon}</div>
-              <div className="text-2xl md:text-3xl font-black text-cat-dark mb-1">{stat.val}</div>
-              <div className="text-[9px] md:text-[10px] font-black text-black uppercase tracking-widest">{stat.label}</div>
+            <div key={i} className="glass-card p-4 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl text-center hover:-translate-y-2 transition-all duration-500 group flex flex-col items-center justify-between gap-1 md:gap-2">
+              <div className="text-2xl md:text-3xl transform group-hover:scale-125 transition-transform">{stat.icon}</div>
+              <div className="text-lg sm:text-xl md:text-3xl font-black text-cat-dark leading-tight break-words w-full">{stat.val}</div>
+              <div className="text-[9px] md:text-[10px] font-black text-black uppercase tracking-wider md:tracking-widest leading-tight">{stat.label}</div>
             </div>
           ))}
         </div>
