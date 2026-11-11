@@ -6,6 +6,7 @@ export default function Home() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredPackage, setHoveredPackage] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -96,7 +97,8 @@ export default function Home() {
               features: ["Saiz sangkar: 2x2x2.5", "Makanan sendiri", "Pasir kucing disediakan"],
               icon: "🏡",
               buttonText: "Pilih Basic",
-              rotate: 12
+              rotate: 12,
+              image: "/gallery/bilik1.jpg"
             },
             {
               id: "B",
@@ -107,7 +109,8 @@ export default function Home() {
               features: ["Saiz sangkar: 2.5x2x2.5", "Makanan sendiri", "Pasir kucing disediakan"],
               icon: "🏘️",
               buttonText: "Tempah Sekarang",
-              rotate: 0
+              rotate: 0,
+              image: "/gallery/bilik2.jpg"
             },
             {
               id: "C",
@@ -118,7 +121,8 @@ export default function Home() {
               features: ["Saiz sangkar: 3x2x2.5", "Makanan sendiri", "Pasir kucing disediakan"],
               icon: "🏰",
               buttonText: "Pilih Royal",
-              rotate: -12
+              rotate: -12,
+              image: "/gallery/bilik3.jpg"
             },
             {
               id: "D",
@@ -129,7 +133,8 @@ export default function Home() {
               features: ["Saiz bilik: 4x3x2.5", "Makanan sendiri", "Pasir kucing disediakan"],
               icon: "👑",
               buttonText: "Pilih VIP",
-              rotate: 12
+              rotate: 12,
+              image: "/gallery/bilik4.jpg"
             }
           ].map((pkg) => {
             const isHovered = hoveredPackage === pkg.id;
@@ -152,9 +157,17 @@ export default function Home() {
                     }}
                   />
                 )}
-                
 
-                
+                {pkg.image && (
+                  <div className="relative z-10 w-full h-28 md:h-32 rounded-2xl md:rounded-3xl overflow-hidden mb-4 md:mb-6 shadow-inner">
+                    <img
+                      src={pkg.image}
+                      alt={`Gambar bilik ${pkg.title}`}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+                )}
+
                 <div 
                   className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center text-2xl md:text-3xl mb-4 md:mb-6 mx-auto shadow-inner relative z-10 transition-transform ${
                     isHovered ? "bg-cat-accent shadow-lg" : "bg-cat-primary"
@@ -319,6 +332,29 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+          onClick={() => setPreviewImage(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setPreviewImage(null)}
+            aria-label="Tutup"
+            className="absolute top-4 right-4 md:top-6 md:right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl flex items-center justify-center transition-colors"
+          >
+            ✕
+          </button>
+          <img
+            src={previewImage}
+            alt="Gambar bilik"
+            onClick={(e) => e.stopPropagation()}
+            className="max-w-full max-h-[85vh] object-contain rounded-2xl md:rounded-3xl shadow-2xl"
+          />
+        </div>
+      )}
     </div>
   );
 }
